@@ -108,9 +108,9 @@ export default function CSVReader() {
   }
 
   useEffect(() => {
-    setLoading(true)
     if (data.length !== 0) {
       setIsVisible(true)
+      setLoading(true)
     }
   }, [data])
 
@@ -147,12 +147,12 @@ export default function CSVReader() {
             .replace(/O/g, "0"),)  
         }]))
         setUpload(true)
+        setIsVisible(false)
       }}
     >
       {({
         getRootProps,
         acceptedFile,
-        ProgressBar,
         getRemoveFileProps,
       }) => (
         <>
