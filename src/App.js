@@ -126,6 +126,21 @@ export default function CSVReader() {
     }
   }, [data])
 
+  const handleShowValid = () => {
+    setFilteredData(data.filter(vin => vin.valid === "Valid"))
+    setCurrentPage(1)
+  }
+
+  const handleShowInvalid = () => {
+    setFilteredData(data.filter(vin => vin.valid === "Invalid"))
+    setCurrentPage(1)
+  }
+
+  const handleShowAll = () => {
+    setFilteredData(data)
+    setCurrentPage(1)
+  }
+
   return (
     <>
     <CSVReader
@@ -184,13 +199,13 @@ export default function CSVReader() {
     </CSVReader>
     {isVisible === true ? 
     <div style={{width: "100%", display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 10}}>
-    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Valid"))}>
+    <button onClick={handleShowValid}>
       Show <span style={{color: "green", fontWeight: 'bold'}}>Valid</span> only
     </button>
-    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Invalid"))}>
+    <button onClick={handleShowInvalid}>
       Show <span style={{color: 'tomato', fontWeight: 'bold'}}>Invalid</span> only
       </button>
-    <button onClick={() => setFilteredData(data)}>Show all</button>
+    <button onClick={handleShowAll}>Show all</button>
   </div> : null}
     {loading === false
     ? <div style={{maxWidth: "100%", minHeight: "100vh", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
