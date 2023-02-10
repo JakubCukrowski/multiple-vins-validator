@@ -184,8 +184,12 @@ export default function CSVReader() {
     </CSVReader>
     {isVisible === true ? 
     <div style={{width: "100%", display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 10}}>
-    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Valid"))}>Show Valid</button>
-    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Invalid"))}>Show Invalid</button>
+    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Valid"))}>
+      Show <span style={{color: "green", fontWeight: 'bold'}}>Valid</span> only
+    </button>
+    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Invalid"))}>
+      Show <span style={{color: 'tomato', fontWeight: 'bold'}}>Invalid</span> only
+      </button>
     <button onClick={() => setFilteredData(data)}>Show all</button>
   </div> : null}
     {loading === false
