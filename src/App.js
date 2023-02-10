@@ -39,6 +39,16 @@ export default function CSVReader() {
   const [upload, setUpload] = useState(false)
   const [loading, setLoading] = useState("")
   const [isVisible, setIsVisible] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostPerPage] = useState(500)
+
+  const lastPostIndex = currentPage * postPerPage
+  const firstPostIndex = lastPostIndex - postPerPage
+
+  const pages = []
+  for (let i = 1; i <= Math.ceil(data.length / postPerPage); i++) {
+    pages.push(i)
+  }
 
   const deleteWhiteSpace = /\s+/g
   const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/g
@@ -122,10 +132,10 @@ export default function CSVReader() {
         const emailIndex = result.data[0].indexOf("Email Address")
         const vinIndex = result.data[0].indexOf("VIN")
         setHeaders(prev => [...prev, {
-          email: result.data[0][emailIndex], key: "email"
+          label: result.data[0][emailIndex], key: "email"
         }, {
-          vin: result.data[0][vinIndex], key: "vin"}, {
-            isValid: "Valid?", key: "valid"
+          label: result.data[0][vinIndex], key: "vin"}, {
+            label: "Valid?", key: "valid"
           }])
         result.data.slice(1, result.data.length)
         .filter(file => file[vinIndex] !== "")
@@ -177,15 +187,17 @@ export default function CSVReader() {
     : <Table striped bordered hover>
     <thead>
       {upload === true ? 
-      <tr>
-        <th>{headers[0].email}</th>
-        <th>{headers[1].vin}</th>
-        <th>{headers[2].isValid}</th>
+      <tr style={{position: 'sticky', top: "-2px", backgroundColor: 'wheat'}}>
+        <th style={{backgroundColor: 'white'}}>#</th>
+        <th style={{backgroundColor: 'white'}}>{headers[0].label}</th>
+        <th style={{backgroundColor: 'white'}}>{headers[1].label}</th>
+        <th style={{backgroundColor: 'white'}}>{headers[2].label}</th>
       </tr> : null}
     </thead>
     <tbody>
-      {data.map((file, index) => 
+      {data.slice(firstPostIndex, lastPostIndex).map((file, index) => 
         <tr key={index}>
+        <td>{index + 1 + lastPostIndex - postPerPage}</td>  
         <td>{file.email}</td>
         <td>{file.vin}</td>
         <td style={{fontWeight: "bold", 
@@ -209,11 +221,18 @@ export default function CSVReader() {
       padding: "6px 10px", 
       border: "0.75px solid black",
       position: 'sticky', 
-      bottom: 50, 
+      bottom: 20, 
       left: "90%"}}>
       Download
     </CSVLink> 
     : null}
+    <div style={{width: "100%", display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 20}}>
+    {pages.map((page, index) => {
+      return (
+        <button className={page === currentPage ? "active" : ""} key={index} onClick={() => setCurrentPage(page)}>{page}</button>
+      )
+    })}
+    </div>
     </>
   );
 }
