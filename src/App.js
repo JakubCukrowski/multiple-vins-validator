@@ -41,12 +41,13 @@ export default function CSVReader() {
   const [isVisible, setIsVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostPerPage] = useState(500)
+  const [filteredData, setFilteredData] = useState([])
 
   const lastPostIndex = currentPage * postPerPage
   const firstPostIndex = lastPostIndex - postPerPage
 
   const pages = []
-  for (let i = 1; i <= Math.ceil(data.length / postPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredData.length / postPerPage); i++) {
     pages.push(i)
   }
 
@@ -107,7 +108,7 @@ export default function CSVReader() {
       return "Valid"
 
     } else if (checkDigitEurope === Number(vin[8]) || (checkDigitEurope === 10 && vin[8] === "X")) {
-      return "Valid for Europe"
+      return "Valid"
 
     } else if (vin.length < 17) {
       return "VIN might be too short to validate or it's not a vin"
@@ -121,6 +122,7 @@ export default function CSVReader() {
     if (data.length !== 0) {
       setIsVisible(true)
       setLoading(true)
+      setFilteredData(data)
     }
   }, [data])
 
@@ -180,6 +182,12 @@ export default function CSVReader() {
         </>
       )}
     </CSVReader>
+    {isVisible === true ? 
+    <div style={{width: "100%", display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 10}}>
+    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Valid"))}>Show Valid</button>
+    <button onClick={() => setFilteredData(data.filter(vin => vin.valid === "Invalid"))}>Show Invalid</button>
+    <button onClick={() => setFilteredData(data)}>Show all</button>
+  </div> : null}
     {loading === false
     ? <div style={{maxWidth: "100%", minHeight: "100vh", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
         <Spinner style={{width: 60, height: 60}} animation='border'/>
@@ -195,7 +203,7 @@ export default function CSVReader() {
       </tr> : null}
     </thead>
     <tbody>
-      {data.slice(firstPostIndex, lastPostIndex).map((file, index) => 
+      {filteredData.slice(firstPostIndex, lastPostIndex).map((file, index) => 
         <tr key={index}>
         <td>{index + 1 + lastPostIndex - postPerPage}</td>  
         <td>{file.email}</td>
@@ -212,7 +220,7 @@ export default function CSVReader() {
   </Table>}
     {isVisible === true 
     ? <CSVLink 
-    data={data} 
+    data={filteredData} 
     headers={headers} 
     style={{
       textDecoration: "none", 
