@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { CSVLink } from 'react-csv';
 import './styles.css'
 import Spinner from 'react-bootstrap/Spinner';
-
+import { useLocation } from 'react-router-dom';
 
 const styles = {
   csvReader: {
@@ -42,6 +42,7 @@ export default function CSVReader() {
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostPerPage] = useState(500)
   const [filteredData, setFilteredData] = useState([])
+  const location = useLocation()
 
   const lastPostIndex = currentPage * postPerPage
   const firstPostIndex = lastPostIndex - postPerPage
@@ -126,6 +127,14 @@ export default function CSVReader() {
     }
   }, [data])
 
+  useEffect(() => {
+    if (data.length !== 0) {
+      const newUrl = `${location.pathname}?page=${currentPage}`;
+      window.history.pushState({}, '', newUrl);
+      console.log("dupa");
+    }
+  }, [data, location, currentPage])
+
   const handleShowValid = () => {
     setFilteredData(data.filter(vin => vin.valid === "Valid"))
     setCurrentPage(1)
@@ -143,6 +152,7 @@ export default function CSVReader() {
 
   const handleShowOther = () => {
     setFilteredData(data.filter(vin => vin.valid === "VIN might be too short to validate or it's not a vin"))
+    setCurrentPage(1)
   }
 
   return (
