@@ -141,18 +141,27 @@ export default function CSVReader() {
     setCurrentPage(1)
   }
 
+  const handleShowOther = () => {
+    setFilteredData(data.filter(vin => vin.valid === "VIN might be too short to validate or it's not a vin"))
+  }
+
   return (
     <>
     <CSVReader
       onUploadAccepted={(result) => {
+        setData([])
         setLoading(false)
         const emailIndex = result.data[0].indexOf("Email Address")
         const vinIndex = result.data[0].indexOf("VIN")
-        setHeaders(prev => [...prev, {
-          label: result.data[0][emailIndex], key: "email"
+        setHeaders([{
+          label: result.data[0][emailIndex], 
+          key: "email"
         }, {
-          label: result.data[0][vinIndex], key: "vin"}, {
-            label: "Valid?", key: "valid"
+          label: result.data[0][vinIndex], 
+          key: "vin"
+        }, {
+            label: "Valid?",
+            key: "valid"
           }])
         result.data.slice(1, result.data.length)
         .filter(file => file[vinIndex] !== "")
@@ -205,6 +214,9 @@ export default function CSVReader() {
     <button onClick={handleShowInvalid}>
       Show <span style={{color: 'tomato', fontWeight: 'bold'}}>Invalid</span> only
       </button>
+      <button onClick={handleShowOther}>
+        Other
+      </button>
     <button onClick={handleShowAll}>Show all</button>
   </div> : null}
     {loading === false
@@ -241,6 +253,7 @@ export default function CSVReader() {
     ? <CSVLink 
     data={filteredData} 
     headers={headers} 
+    filename="subscribers_vins"
     style={{
       textDecoration: "none", 
       color: 'white', 
