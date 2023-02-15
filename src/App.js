@@ -177,6 +177,7 @@ export default function CSVReader() {
         .filter(file => file[vinIndex] !== "")
         .filter(file => file[emailIndex] !== "")
         .filter(file => file[vinIndex].length <= 30)
+        .filter(file => file[vinIndex] !== "kt33030" && "KT33030")
         .forEach(file => setData(prev => [...prev, {
           email: file[emailIndex],
           vin: file[vinIndex]
