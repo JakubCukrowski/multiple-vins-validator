@@ -131,7 +131,6 @@ export default function CSVReader() {
     if (data.length !== 0) {
       const newUrl = `${location.pathname}?page=${currentPage}`;
       window.history.pushState({}, '', newUrl);
-      console.log("dupa");
     }
   }, [data, location, currentPage])
 
